@@ -1,8 +1,36 @@
+import path from "path";
+import fs from "fs";
+import multer from "multer";
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import UsersModel from "../Models/UsersModel.js";
+
 export const RegistrationController = async (req, res) => {
   try {
     const { name, email, phone, address, password, role, question } = req.body;
+    const avatarFile = req.file;
 
-    //image with multer here
+    //validation here
+
+    const newUser = new UsersModel({
+      name,
+      email,
+      phone,
+      address,
+      password,
+      role,
+      question,
+      profileImage: [
+        {
+          data: fs.readFileSync(avatarFile.path), //Read file contents
+          contentType: avatarFile.mimetype,
+        },
+      ],
+    });
+
+    // Save the newUser data to MongoDB
+    await newUser.save();
 
     res.send({
       message: "RegistrationController Working!",
@@ -13,6 +41,9 @@ export const RegistrationController = async (req, res) => {
       Password: password,
       Role: role,
       Question: question,
+      filename: avatarFile?.filename,
+      originalname: avatarFile?.originalname,
+      data: newUser,
     });
   } catch (error) {
     console.log(error);
