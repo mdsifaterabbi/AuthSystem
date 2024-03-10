@@ -9,6 +9,7 @@ const usersSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     phone: {
       type: String,
@@ -26,7 +27,7 @@ const usersSchema = new mongoose.Schema(
       type: Boolean,
       default: 0,
     },
-    question: {
+    answer: {
       type: String,
       required: true,
     },
